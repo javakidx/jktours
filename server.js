@@ -15,13 +15,6 @@ process.on('unhandledRejection', err => {
   process.exit(1);
 });
 
-process.on('SIGTERM', () => {
-  console.log('☝️ SIGTERM RECEIVED, Shut down gracefully');
-  server.close(() => {
-    console.log('💥Process terminated!');
-  });
-});
-
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 
@@ -43,4 +36,11 @@ mongoose
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}...`);
+});
+
+process.on('SIGTERM', () => {
+  console.log('☝️ SIGTERM RECEIVED, Shut down gracefully');
+  app.close(() => {
+    console.log('💥Process terminated!');
+  });
 });
